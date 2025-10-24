@@ -13,7 +13,7 @@ EXTERNAL_COUNTER_FILE = 'external_counter.json'
 
 if not os.path.exists(STATS_FILE):
     with open(STATS_FILE, 'w') as f:
-        json.dump({}, f)
+        json.dump({'players': [], 'gameIsActive': False, 'team1Score': 0, 'team2Score': 0}, f)
 
 if not os.path.exists(EXTERNAL_COUNTER_FILE):
     with open(EXTERNAL_COUNTER_FILE, 'w') as f:
@@ -25,22 +25,47 @@ match_state = {
 }
 
 def load_game_stats():
-    """Load stats from game_stats.json"""
+    """Load stats from game_stats.json (supports both old and new format)"""
     try:
         with open(STATS_FILE, 'r') as f:
             data = json.load(f)
-            print(f"📖 Loaded game stats: {len(data)} players")
-            return data
+            
+            # Check if it's the new format with 'players' array
+            if 'players' in data and isinstance(data['players'], list):
+                print(f"📖 Loaded game stats (NEW FORMAT): {len(data['players'])} players")
+                return data
+            else:
+                # Old format - convert to new format internally
+                print(f"📖 Loaded game stats (OLD FORMAT): {len(data)} players")
+                players = []
+                for rfid, stats in data.items():
+                    if isinstance(stats, dict):  # Skip non-player keys
+                        players.append({
+                            'id': rfid,
+                            'teamId': stats.get('team', 1),
+                            'name': stats.get('name', rfid),
+                            'kills': stats.get('kills', 0),
+                            'deaths': stats.get('deaths', 0),
+                            'killTimestamps': [],
+                            'deathTimestamps': []
+                        })
+                return {
+                    'players': players,
+                    'gameIsActive': False,
+                    'team1Score': 0,
+                    'team2Score': 0
+                }
     except Exception as e:
         print(f"❌ Error loading stats: {e}")
-        return {}
+        return {'players': [], 'gameIsActive': False, 'team1Score': 0, 'team2Score': 0}
 
 def save_game_stats(data):
     """Save stats to game_stats.json"""
     try:
         with open(STATS_FILE, 'w') as f:
             json.dump(data, f, indent=4, default=str)
-        print(f"💾 Saved game stats: {len(data)} players")
+        player_count = len(data.get('players', [])) if 'players' in data else len(data)
+        print(f"💾 Saved game stats: {player_count} players")
     except Exception as e:
         print(f"❌ Error saving stats: {e}")
 
@@ -61,20 +86,47 @@ def convert_to_leaderboard_format(game_stats):
     team1 = []
     team2 = []
     
-    for player_id, stats in game_stats.items():
-        player_data = {
-            'rfid': player_id,
-            'name': stats.get('name', player_id.replace('_', ' ').title()),
-            'kills': stats.get('kills', 0),
-            'deaths': stats.get('deaths', 0)
-        }
-        
-        if stats.get('team') == 1:
-            team1.append(player_data)
-        elif stats.get('team') == 2:
-            team2.append(player_data)
+    # Handle new format with 'players' array
+    if 'players' in game_stats and isinstance(game_stats['players'], list):
+        for player in game_stats['players']:
+            player_data = {
+                'rfid': player.get('id', ''),
+                'name': player.get('name', 'Unknown'),
+                'kills': player.get('kills', 0),
+                'deaths': player.get('deaths', 0)
+            }
+            
+            if player.get('teamId') == 1:
+                team1.append(player_data)
+            elif player.get('teamId') == 2:
+                team2.append(player_data)
+    else:
+        # Handle old format (for backward compatibility)
+        for player_id, stats in game_stats.items():
+            if not isinstance(stats, dict):
+                continue
+                
+            player_data = {
+                'rfid': player_id,
+                'name': stats.get('name', player_id.replace('_', ' ').title()),
+                'kills': stats.get('kills', 0),
+                'deaths': stats.get('deaths', 0)
+            }
+            
+            if stats.get('team') == 1:
+                team1.append(player_data)
+            elif stats.get('team') == 2:
+                team2.append(player_data)
     
     return {'team1': team1, 'team2': team2}
+
+def find_player_by_id(game_stats, player_id):
+    """Find a player by ID in the new format"""
+    if 'players' in game_stats:
+        for player in game_stats['players']:
+            if player.get('id') == player_id:
+                return player
+    return None
 
 @app.route('/api/players', methods=['GET'])
 def get_players():
@@ -86,9 +138,9 @@ def get_players():
 
 @app.route('/api/register', methods=['POST'])
 def register_player():
-    """Register a player with RFID (for NITW students)"""
+    """Register a player with RFID"""
     data = request.json
-    rfid = data.get('rfid')
+    rfid = str(data.get('rfid'))
     name = data.get('name')
     team = data.get('team')
     
@@ -98,23 +150,32 @@ def register_player():
     team_num = 1 if team == 'team1' else 2
     
     game_stats = load_game_stats()
-    player_id = str(rfid)
     
-    if player_id not in game_stats:
-        game_stats[player_id] = {
+    # Ensure we have the new format
+    if 'players' not in game_stats:
+        game_stats = {'players': [], 'gameIsActive': False, 'team1Score': 0, 'team2Score': 0}
+    
+    # Check if player already exists
+    player = find_player_by_id(game_stats, rfid)
+    
+    if player:
+        # Update existing player
+        player['name'] = name
+        player['teamId'] = team_num
+        print(f"⚠️ Updated existing player: {name} (RFID: {rfid})")
+    else:
+        # Add new player
+        new_player = {
+            'id': rfid,
+            'teamId': team_num,
             'name': name,
-            'team': team_num,
             'kills': 0,
             'deaths': 0,
-            'kd': 0.0,
-            'last_kill_time': None,
-            'kill_intervals': []
+            'killTimestamps': [],
+            'deathTimestamps': []
         }
+        game_stats['players'].append(new_player)
         print(f"✅ Registered NEW player: {name} (RFID: {rfid}, Team: {team_num})")
-    else:
-        game_stats[player_id]['name'] = name
-        game_stats[player_id]['team'] = team_num
-        print(f"⚠️ Updated existing player: {name} (RFID: {rfid})")
     
     save_game_stats(game_stats)
     return jsonify({'success': True, 'message': f'{name} registered to team {team_num}'})
@@ -125,16 +186,17 @@ def get_registered_candidates():
     game_stats = load_game_stats()
     
     external_players = []
-    for rfid, stats in game_stats.items():
-        if stats.get('external', False):
-            external_players.append({
-                'rfid': rfid,
-                'name': stats.get('name', ''),
-                'email': stats.get('email', ''),
-                'mobile': stats.get('mobile', ''),
-                'college': stats.get('college', 'External'),
-                'team': 'Team Hearts' if stats.get('team') == 1 else 'Team Spades'
-            })
+    if 'players' in game_stats:
+        for player in game_stats['players']:
+            if player.get('external', False):
+                external_players.append({
+                    'rfid': player.get('id'),
+                    'name': player.get('name', ''),
+                    'email': player.get('email', ''),
+                    'mobile': player.get('mobile', ''),
+                    'college': player.get('college', 'External'),
+                    'team': 'Team Hearts' if player.get('teamId') == 1 else 'Team Spades'
+                })
     
     return jsonify({
         'success': True,
@@ -151,33 +213,21 @@ def register_kill():
     print(f"🎯 Kill request for RFID: {rfid}")
     
     game_stats = load_game_stats()
+    player = find_player_by_id(game_stats, rfid)
     
-    if rfid not in game_stats:
+    if not player:
         print(f"❌ Player not found: {rfid}")
         return jsonify({'error': 'Player not registered'}), 404
     
-    player = game_stats[rfid]
     player['kills'] += 1
     
+    # Add timestamp (optional, for tracking)
     now = datetime.now()
-    if player.get('last_kill_time'):
-        try:
-            last_time = datetime.fromisoformat(player['last_kill_time']) if isinstance(player['last_kill_time'], str) else player['last_kill_time']
-            time_diff = (now - last_time).total_seconds()
-            if 'kill_intervals' not in player:
-                player['kill_intervals'] = []
-            player['kill_intervals'].append(time_diff)
-        except:
-            pass
+    if 'killTimestamps' not in player:
+        player['killTimestamps'] = []
+    # We don't add timestamps here since they come from the simulation data
     
-    player['last_kill_time'] = now.isoformat()
-    
-    if player['deaths'] > 0:
-        player['kd'] = round(player['kills'] / player['deaths'], 2)
-    else:
-        player['kd'] = float(player['kills'])
-    
-    print(f"✅ Kill registered for {player['name']}: Kills={player['kills']}, Deaths={player['deaths']}, KD={player['kd']}")
+    print(f"✅ Kill registered for {player['name']}: Kills={player['kills']}, Deaths={player['deaths']}")
     
     save_game_stats(game_stats)
     return jsonify({'success': True})
@@ -191,20 +241,20 @@ def register_death():
     print(f"💀 Death request for RFID: {rfid}")
     
     game_stats = load_game_stats()
+    player = find_player_by_id(game_stats, rfid)
     
-    if rfid not in game_stats:
+    if not player:
         print(f"❌ Player not found: {rfid}")
         return jsonify({'error': 'Player not registered'}), 404
     
-    player = game_stats[rfid]
     player['deaths'] += 1
     
-    if player['deaths'] > 0:
-        player['kd'] = round(player['kills'] / player['deaths'], 2)
-    else:
-        player['kd'] = 0.0
+    # Add timestamp (optional, for tracking)
+    if 'deathTimestamps' not in player:
+        player['deathTimestamps'] = []
+    # We don't add timestamps here since they come from the simulation data
     
-    print(f"✅ Death registered for {player['name']}: Kills={player['kills']}, Deaths={player['deaths']}, KD={player['kd']}")
+    print(f"✅ Death registered for {player['name']}: Kills={player['kills']}, Deaths={player['deaths']}")
     
     save_game_stats(game_stats)
     return jsonify({'success': True})
@@ -214,12 +264,14 @@ def reset_match():
     """Reset leaderboard for new match"""
     game_stats = load_game_stats()
     
-    for player in game_stats.values():
-        player['kills'] = 0
-        player['deaths'] = 0
-        player['kd'] = 0.0
-        player['last_kill_time'] = None
-        player['kill_intervals'] = []
+    if 'players' in game_stats:
+        for player in game_stats['players']:
+            player['kills'] = 0
+            player['deaths'] = 0
+            player['killTimestamps'] = []
+            player['deathTimestamps'] = []
+        game_stats['team1Score'] = 0
+        game_stats['team2Score'] = 0
     
     save_game_stats(game_stats)
     
@@ -274,7 +326,9 @@ def clear_team():
     team_num = 1 if team == 'team1' else 2
     
     game_stats = load_game_stats()
-    game_stats = {k: v for k, v in game_stats.items() if v.get('team') != team_num}
+    
+    if 'players' in game_stats:
+        game_stats['players'] = [p for p in game_stats['players'] if p.get('teamId') != team_num]
     
     save_game_stats(game_stats)
     print(f"🗑️ Cleared team {team_num}")
@@ -289,12 +343,14 @@ def remove_player():
     
     game_stats = load_game_stats()
     
-    if rfid in game_stats:
-        player_name = game_stats[rfid].get('name', rfid)
-        del game_stats[rfid]
-        save_game_stats(game_stats)
-        print(f"🗑️ Removed player: {player_name}")
-        return jsonify({'success': True})
+    if 'players' in game_stats:
+        player = find_player_by_id(game_stats, rfid)
+        if player:
+            player_name = player.get('name', rfid)
+            game_stats['players'] = [p for p in game_stats['players'] if p.get('id') != rfid]
+            save_game_stats(game_stats)
+            print(f"🗑️ Removed player: {player_name}")
+            return jsonify({'success': True})
     
     return jsonify({'error': 'Player not found'}), 404
 
@@ -304,11 +360,12 @@ def get_registry():
     game_stats = load_game_stats()
     registry = {}
     
-    for rfid, stats in game_stats.items():
-        registry[rfid] = {
-            'name': stats.get('name', rfid),
-            'team': stats.get('team', 1)
-        }
+    if 'players' in game_stats:
+        for player in game_stats['players']:
+            registry[player.get('id')] = {
+                'name': player.get('name', ''),
+                'team': player.get('teamId', 1)
+            }
     
     return jsonify(registry)
 
