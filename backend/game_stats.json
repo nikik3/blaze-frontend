@@ -1,1 +1,471 @@
-{}
+{
+    "RFID001": {
+        "name": "H1",
+        "team": 1,
+        "kills": 9,
+        "deaths": 10,
+        "kd": 0.9,
+        "last_kill_time": "2025-10-24T13:06:30.754949",
+        "kill_intervals": [
+            112.156404,
+            5.780153,
+            2.239562,
+            3.557516,
+            5.710971,
+            341.17257,
+            31.004602,
+            615.386856
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID005",
+                "interval": 112.156404
+            },
+            {
+                "victim": "RFID007",
+                "interval": 5.780153
+            },
+            {
+                "victim": "RFID008",
+                "interval": 2.239562
+            },
+            {
+                "victim": "RFID006",
+                "interval": 3.557516
+            },
+            {
+                "victim": "RFID005",
+                "interval": 5.710971
+            },
+            {
+                "victim": "RFID007",
+                "interval": 341.17257
+            },
+            {
+                "victim": "RFID008",
+                "interval": 31.004602
+            },
+            {
+                "victim": "RFID006",
+                "interval": 615.386856
+            },
+            {
+                "victim": "RFID005",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID002": {
+        "name": "H2",
+        "team": 1,
+        "kills": 13,
+        "deaths": 12,
+        "kd": 1.08,
+        "last_kill_time": "2025-10-24T13:58:30.534637",
+        "kill_intervals": [
+            9.838925,
+            10.304362,
+            27.469345,
+            97.040208,
+            4.965959,
+            365.437467,
+            9.560395,
+            8.624731,
+            23.46557,
+            582.359451,
+            6.080021,
+            3126.906698
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID006",
+                "interval": 9.838925
+            },
+            {
+                "victim": "RFID007",
+                "interval": 10.304362
+            },
+            {
+                "victim": "RFID005",
+                "interval": 27.469345
+            },
+            {
+                "victim": "RFID008",
+                "interval": 97.040208
+            },
+            {
+                "victim": "RFID007",
+                "interval": 4.965959
+            },
+            {
+                "victim": "RFID006",
+                "interval": 365.437467
+            },
+            {
+                "victim": "RFID005",
+                "interval": 9.560395
+            },
+            {
+                "victim": "RFID008",
+                "interval": 8.624731
+            },
+            {
+                "victim": "RFID007",
+                "interval": 23.46557
+            },
+            {
+                "victim": "RFID006",
+                "interval": 582.359451
+            },
+            {
+                "victim": "RFID005",
+                "interval": 6.080021
+            },
+            {
+                "victim": "RFID008",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID003": {
+        "name": "H3",
+        "team": 1,
+        "kills": 6,
+        "deaths": 5,
+        "kd": 1.2,
+        "last_kill_time": "2025-10-24T12:56:17.517900",
+        "kill_intervals": [
+            7.168478,
+            89.540389,
+            385.408296,
+            12.511674,
+            17.668836
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID007",
+                "interval": 7.168478
+            },
+            {
+                "victim": "RFID005",
+                "interval": 89.540389
+            },
+            {
+                "victim": "RFID008",
+                "interval": 385.408296
+            },
+            {
+                "victim": "RFID006",
+                "interval": 12.511674
+            },
+            {
+                "victim": "RFID007",
+                "interval": 17.668836
+            },
+            {
+                "victim": "RFID005",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID004": {
+        "name": "H4",
+        "team": 1,
+        "kills": 9,
+        "deaths": 6,
+        "kd": 1.5,
+        "last_kill_time": "2025-10-24T13:06:26.856873",
+        "kill_intervals": [
+            36.388017,
+            54.852749,
+            9.049841,
+            3.207117,
+            61.855521,
+            357.684945,
+            613.121174,
+            6.760033
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID008",
+                "interval": 36.388017
+            },
+            {
+                "victim": "RFID006",
+                "interval": 54.852749
+            },
+            {
+                "victim": "RFID007",
+                "interval": 9.049841
+            },
+            {
+                "victim": "RFID005",
+                "interval": 3.207117
+            },
+            {
+                "victim": "RFID008",
+                "interval": 61.855521
+            },
+            {
+                "victim": "RFID006",
+                "interval": 357.684945
+            },
+            {
+                "victim": "RFID007",
+                "interval": 613.121174
+            },
+            {
+                "victim": "RFID005",
+                "interval": 6.760033
+            },
+            {
+                "victim": "RFID008",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID005": {
+        "name": "S1",
+        "team": 2,
+        "kills": 9,
+        "deaths": 9,
+        "kd": 1.0,
+        "last_kill_time": "2025-10-24T12:56:09.011259",
+        "kill_intervals": [
+            3.332938,
+            7.762147,
+            10.690277,
+            28.865328,
+            45.206316,
+            16.196361,
+            395.975728,
+            18.814116
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID001",
+                "interval": 3.332938
+            },
+            {
+                "victim": "RFID003",
+                "interval": 7.762147
+            },
+            {
+                "victim": "RFID002",
+                "interval": 10.690277
+            },
+            {
+                "victim": "RFID004",
+                "interval": 28.865328
+            },
+            {
+                "victim": "RFID001",
+                "interval": 45.206316
+            },
+            {
+                "victim": "RFID002",
+                "interval": 16.196361
+            },
+            {
+                "victim": "RFID003",
+                "interval": 395.975728
+            },
+            {
+                "victim": "RFID004",
+                "interval": 18.814116
+            },
+            {
+                "victim": "RFID001",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID006": {
+        "name": "S2",
+        "team": 2,
+        "kills": 15,
+        "deaths": 9,
+        "kd": 1.67,
+        "last_kill_time": "2025-10-24T12:56:38.521292",
+        "kill_intervals": [
+            2.788764,
+            4.562398,
+            9.86359,
+            6.163346,
+            18.955277,
+            57.757744,
+            19.222197,
+            7.947343,
+            15.872806,
+            30.802794,
+            333.742006,
+            46.872022,
+            3.732506,
+            7.233526
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID002",
+                "interval": 2.788764
+            },
+            {
+                "victim": "RFID001",
+                "interval": 4.562398
+            },
+            {
+                "victim": "RFID004",
+                "interval": 9.86359
+            },
+            {
+                "victim": "RFID003",
+                "interval": 6.163346
+            },
+            {
+                "victim": "RFID002",
+                "interval": 18.955277
+            },
+            {
+                "victim": "RFID001",
+                "interval": 57.757744
+            },
+            {
+                "victim": "RFID004",
+                "interval": 19.222197
+            },
+            {
+                "victim": "RFID003",
+                "interval": 7.947343
+            },
+            {
+                "victim": "RFID002",
+                "interval": 15.872806
+            },
+            {
+                "victim": "RFID001",
+                "interval": 30.802794
+            },
+            {
+                "victim": "RFID004",
+                "interval": 333.742006
+            },
+            {
+                "victim": "RFID003",
+                "interval": 46.872022
+            },
+            {
+                "victim": "RFID002",
+                "interval": 3.732506
+            },
+            {
+                "victim": "RFID001",
+                "interval": 7.233526
+            },
+            {
+                "victim": "RFID004",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID007": {
+        "name": "BlahBlah",
+        "team": 2,
+        "kills": 9,
+        "deaths": 14,
+        "kd": 0.64,
+        "last_kill_time": "2025-10-24T12:55:56.853423",
+        "kill_intervals": [
+            49.953529,
+            3.609884,
+            54.73859,
+            14.345778,
+            7.637336,
+            6.478497,
+            8.199127,
+            377.480164
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID001",
+                "interval": 49.953529
+            },
+            {
+                "victim": "RFID002",
+                "interval": 3.609884
+            },
+            {
+                "victim": "RFID004",
+                "interval": 54.73859
+            },
+            {
+                "victim": "RFID003",
+                "interval": 14.345778
+            },
+            {
+                "victim": "RFID001",
+                "interval": 7.637336
+            },
+            {
+                "victim": "RFID002",
+                "interval": 6.478497
+            },
+            {
+                "victim": "RFID004",
+                "interval": 8.199127
+            },
+            {
+                "victim": "RFID003",
+                "interval": 377.480164
+            },
+            {
+                "victim": "RFID001",
+                "interval": 0
+            }
+        ]
+    },
+    "RFID008": {
+        "name": "S4",
+        "team": 2,
+        "kills": 7,
+        "deaths": 12,
+        "kd": 0.58,
+        "last_kill_time": "2025-10-24T12:56:24.329382",
+        "kill_intervals": [
+            2.817206,
+            21.51607,
+            49.121702,
+            9.040562,
+            431.589571,
+            3.408884
+        ],
+        "kill_history": [
+            {
+                "victim": "RFID003",
+                "interval": 2.817206
+            },
+            {
+                "victim": "RFID001",
+                "interval": 21.51607
+            },
+            {
+                "victim": "RFID004",
+                "interval": 49.121702
+            },
+            {
+                "victim": "RFID002",
+                "interval": 9.040562
+            },
+            {
+                "victim": "RFID003",
+                "interval": 431.589571
+            },
+            {
+                "victim": "RFID001",
+                "interval": 3.408884
+            },
+            {
+                "victim": "RFID004",
+                "interval": 0
+            }
+        ]
+    }
+}
